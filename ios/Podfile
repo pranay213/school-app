@@ -5,7 +5,9 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, min_ios_version_supported
+platform :ios, '13.0'  # Set the minimum iOS version
+use_modular_headers!   # Enable modular headers globally
+
 prepare_react_native_project!
 
 linkage = ENV['USE_FRAMEWORKS']
@@ -23,13 +25,18 @@ target 'schoolapp' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  # Fixing Firebase and SDWebImage issues
+  pod 'FirebaseCoreInternal', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
+  pod 'SDWebImage', :modular_headers => true
+  pod 'SDWebImageSVGCoder', :modular_headers => true
+
   post_install do |installer|
     # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(
       installer,
       config[:reactNativePath],
-      :mac_catalyst_enabled => false,
-      # :ccache_enabled => true
+      :mac_catalyst_enabled => false
     )
   end
 end
