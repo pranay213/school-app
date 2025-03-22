@@ -12,7 +12,7 @@ on:
 
 jobs:
   build-ios:
-    runs-on: macos-latest
+    runs-on: macos-14  # Using macOS 14 (latest version)
 
     steps:
       - name: Checkout Repository
@@ -59,7 +59,7 @@ jobs:
                      -exportPath build/output | xcpretty
 
       - name: Upload .ipa Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ios-app
           path: ios/build/output
