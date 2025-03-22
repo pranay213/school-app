@@ -1,0 +1,65 @@
+name: iOS Build (No Developer Account)
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-ios:
+    runs-on: macos-14  # Using macOS 14 (latest version)
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'yarn'
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod install --repo-update
+
+      - name: Create Dummy Signing Certificate
+        run: |
+          security create-keychain -p "" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "" build.keychain
+          security set-keychain-settings -lut 21600 build.keychain
+
+      - name: Build iOS App (Ad-Hoc)
+        run: |
+          cd ios
+          xcodebuild -workspace schoolapp.xcworkspace \
+                     -scheme schoolapp \
+                     -sdk iphoneos \
+                     -configuration Release \
+                     -archivePath build/schoolapp.xcarchive \
+                     archive | xcpretty
+
+      - name: Export .ipa File
+        run: |
+          cd ios
+          mkdir -p build/output
+          xcodebuild -exportArchive \
+                     -archivePath build/schoolapp.xcarchive \
+                     -exportOptionsPlist exportOptions.plist \
+                     -exportPath build/output | xcpretty
+
+      - name: Upload .ipa Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-app
+          path: ios/build/output
