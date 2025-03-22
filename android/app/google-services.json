@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "896958762046",
+    "project_id": "cli-notifications-7cf2c",
+    "storage_bucket": "cli-notifications-7cf2c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:896958762046:android:945c0cdb0b0a72346e956f",
+        "android_client_info": {
+          "package_name": "com.schoolapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6koIKBwNx21k-BOF3Dxv_MCIHD-3PPn8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
