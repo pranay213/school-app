@@ -5,7 +5,7 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, '13.0'  # Minimum iOS version
+platform :ios, '13.0'
 use_modular_headers!   # Enable modular headers globally
 
 prepare_react_native_project!
@@ -16,6 +16,8 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
+source 'https://github.com/CocoaPods/Specs.git'
+
 target 'schoolapp' do
   config = use_native_modules!
 
@@ -24,15 +26,14 @@ target 'schoolapp' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  # Fix Firebase and Bottom Tabs dependencies
-  pod 'FirebaseCoreInternal', :modular_headers => true
+  # Add Firebase dependencies
+  pod 'Firebase/Core'
+  pod 'Firebase/Messaging'
   pod 'GoogleUtilities', :modular_headers => true
   pod 'SDWebImage', :modular_headers => true
   pod 'SDWebImageSVGCoder', :modular_headers => true
-  pod '@react-native-firebase/app', :modular_headers => true
-  pod '@react-native-firebase/messaging', :modular_headers => true
 
-  # Ensure react-native-bottom-tabs is only declared once
+  # Fix react-native-bottom-tabs issue
   pod 'react-native-bottom-tabs', :path => '../node_modules/react-native-bottom-tabs'
 
   post_install do |installer|
@@ -42,7 +43,6 @@ target 'schoolapp' do
       :mac_catalyst_enabled => false
     )
 
-    # Ensure static linking is correct
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
         config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
