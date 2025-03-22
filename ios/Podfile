@@ -24,17 +24,18 @@ target 'schoolapp' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  # Fix Firebase and React Native Bottom Tabs dependencies
+  # Fix Firebase and Bottom Tabs dependencies
   pod 'FirebaseCoreInternal', :modular_headers => true
   pod 'GoogleUtilities', :modular_headers => true
   pod 'SDWebImage', :modular_headers => true
   pod 'SDWebImageSVGCoder', :modular_headers => true
   pod '@react-native-firebase/app', :modular_headers => true
   pod '@react-native-firebase/messaging', :modular_headers => true
-  pod 'react-native-bottom-tabs', :modular_headers => true
+
+  # Ensure react-native-bottom-tabs is only declared once
+  pod 'react-native-bottom-tabs', :path => '../node_modules/react-native-bottom-tabs'
 
   post_install do |installer|
-    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(
       installer,
       config[:reactNativePath],
